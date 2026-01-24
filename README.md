@@ -1,5 +1,6 @@
 # Secure Deployment of a Production Website on AWS EC2
 
+
 ## Project Overview
 This project demonstrates the deployment of a secure, production-ready website on AWS using EC2 and Ubuntu Linux.  
 It covers:
@@ -13,6 +14,19 @@ It covers:
 - Professional documentation
 
 ---
+
+
+## Repository Contents
+
+- 📁 [screenshots/](screenshots/)
+  - Contains task-based screenshots (Task 1–7)
+- 📁 [scripts/](scripts/)
+  - Contains shell scripts documenting commands used for setup, deployment, and hardening
+- 📄 [README.md](README.md)
+  - This file: project documentation and explanation
+
+
+
 
 ## Architecture
 The deployed website uses a single EC2 instance with:
@@ -45,6 +59,14 @@ The deployed website uses a single EC2 instance with:
    - The AWS root account was reserved for account-level operations only.  
    - All EC2 operations were performed using the IAM user for better security and accountability.
 
+
+**Mistakes Made / Notes to Take:**
+- Initially tried using the root account to test EC2 access → should **always use IAM user**.  
+- Forgot to check group policy propagation before testing → AWS takes a few minutes for permissions to apply.  
+- Always double-check group membership for the IAM user before proceeding.
+
+
+
 **Screenshots:**
 - ![IAM User](screenshots/task1-iam/iam-user.png)
 - ![IAM Group Permissions](screenshots/task1-iam/iam-group-permissions.png)
@@ -69,6 +91,13 @@ The deployed website uses a single EC2 instance with:
 3. **Verification:**  
    - Verified that only the specified ports are open using AWS console.
 
+
+**Mistakes Made / Notes to Take:**
+- Initially gave the wrong IP for SSH → connection timed out.  
+- Learned to set `chmod 400` on `.pem` file to avoid SSH permission errors.  
+- Remember to name the key without spaces; spaces break CLI commands.
+
+
 **Screenshots:**
 - ![Key Pair](screenshots/task2-keypair-security/keypair-created.png)
 - ![Security Group](screenshots/task2-keypair-security/security-group.png)
@@ -86,6 +115,13 @@ The deployed website uses a single EC2 instance with:
 
 2. **Verify Instance Status:**  
    - Confirmed the instance is running and passed all AWS status checks.
+
+
+**Mistakes Made / Notes to Take:**
+- Initially forgot to assign the security group → could not SSH into the instance.
+- Double-check public IP before attempting SSH.
+- Always select the correct region matching the security group.
+
 
 **Screenshot:**  
 ![EC2 Running](screenshots/task3-ec2-deployment/ec2-running.png)
@@ -118,6 +154,14 @@ The deployed website uses a single EC2 instance with:
     - Accessed the EC2 public IP via browser.
     - Confirmed the default Apache web page is displayed.
 
+
+**Mistakes Made / Notes to Take:**
+- Initially tried SSH with .pem in wrong directory → file not found.
+- Forgot to open port 80 in security group → browser could not access default page.
+- Always verify that the key file has correct permissions (chmod 400).
+
+
+
 **Screenshots:**
 - ![SSH Terminal](screenshots/task4-server-access/ssh-terminal.png)
 - ![Webserver Default Page](screenshots/task4-server-access/webserver-default.png)
@@ -141,9 +185,17 @@ The deployed website uses a single EC2 instance with:
     ```
 - Ensures proper file ownership and permissions.
 
-3.  Verify Website:
+3.  **Verify Website:**
     - Opened the EC2 public IP in a browser.
     - Confirmed the website is publicly accessible.
+
+
+**Mistakes Made / Notes to Take:**
+- Initially forgot chown → website displayed permission errors.
+- Forgetting chmod 755 caused some files not to load correctly.
+- Always verify directory ownership and permissions after deployment.
+
+
 
 **Screenshots:**
 - ![Website Deployed](screenshots/task5-website-deployment/website-deployed.png)
@@ -163,6 +215,13 @@ The deployed website uses a single EC2 instance with:
 2.  Associate Elastic IP with EC2 instance.
 
 3.  Reboot Instance to confirm that the website remains accessible via the Elastic IP.
+
+
+**Mistakes Made / Notes to Take:**
+- Initially did not reboot EC2 → DNS cache caused website not to resolve immediately.
+- Ensure Elastic IP is in the same region as your EC2 instance.
+- Document the Elastic IP for submission; it does not change after association.
+
 
 **Screenshots:**
 - ![Elastic IP Association](screenshots/task6-elastic-ip/elastic-ip-association.png)
@@ -193,11 +252,25 @@ The deployed website uses a single EC2 instance with:
 3. Verify Access:
 -   Confirmed login is possible only via the new user and SSH key.
 
+
+**Mistakes Made / Notes to Take:**
+- Initially did not copy SSH key to new user → login failed.
+- Always test new user login in a separate terminal before closing the original session.
+- Double-check sshd_config syntax; incorrect edits can lock you out.
+
+
+
 **Screenshots:**
 - ![New User](screenshots/task7-server-hardening/new-user-created.png)
 - ![SSH Config Snippet](screenshots/task7-server-hardening/ssh-config-snippet.png)
 
 ---
+
+
+### Commands Used
+All commands executed during server configuration and deployment are documented
+in the `scripts/` directory for transparency and reproducibility.
+
 
 
 ##  Security Considerations
@@ -213,12 +286,6 @@ The deployed website uses a single EC2 instance with:
 - Server hardening ensures minimal attack surface.
 
 
-##  Repository Contents
-    ```bash
-    /screenshots
-    /scripts
-    README.md
-    ```
 
 
 ## Submission
