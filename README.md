@@ -101,6 +101,127 @@ The deployed website uses a single EC2 instance with:
    - Verified terminal access.
 
 2. **Update System Packages:**  
-   ```bash
+    ```bash
    sudo apt update && sudo apt upgrade -y
+   ```
+   - This ensures the server is running the latest security patches and software.
 
+3.  **Install Web Server (Apache):**
+    ```bash
+    sudo apt install apache2 -y
+    sudo systemctl start apache2
+    sudo systemctl enable apache2
+    ```
+    -  This installs Apache and ensures it starts automatically on boot.
+
+4. Verify Installation:
+    - Accessed the EC2 public IP via browser.
+    - Confirmed the default Apache web page is displayed.
+
+**Screenshots:**
+- ![SSH Terminal](screenshots/task4-server-access/ssh-terminal.png)
+- ![Webserver Default Page](screenshots/task4-server-access/webserver-default.png)
+
+---
+
+##  Task 5: Website Deployment
+
+**Objective:** Deploy a static website on the EC2 web server.
+
+**Steps:**
+
+1.  **Download Template:**
+    - Selected a free HTML template from Tooplate.com.
+
+2.  **Deploy to Web Root:**
+    ```bash
+    sudo cp -r ~/Downloads/template/* /var/www/html/
+    sudo chown -R www-data:www-data /var/www/html
+    sudo chmod -R 755 /var/www/html
+    ```
+- Ensures proper file ownership and permissions.
+
+3.  Verify Website:
+    - Opened the EC2 public IP in a browser.
+    - Confirmed the website is publicly accessible.
+
+**Screenshots:**
+- ![Website Deployed](screenshots/task5-website-deployment/website-deployed.png)
+- ![Deployment Commands](screenshots/task5-website-deployment/deployment-commands.png)
+
+---
+
+
+##  Task 6: Elastic IP Configuration
+
+**Objective:** Assign a persistent IP to the EC2 instance.
+
+**Steps:**
+
+1.  Allocate Elastic IP in AWS.
+
+2.  Associate Elastic IP with EC2 instance.
+
+3.  Reboot Instance to confirm that the website remains accessible via the Elastic IP.
+
+**Screenshots:**
+- ![Elastic IP Association](screenshots/task6-elastic-ip/elastic-ip-association.png)
+- ![Website via Elastic IP](screenshots/task6-elastic-ip/website-elastic-ip.png)
+
+---
+
+##  Task 7: Basic Server Hardening
+
+**Objective:** Improve EC2 server security.
+
+**Steps:**
+
+1.  **Create New User:**
+    ```bash
+    sudo adduser secureuser
+    sudo usermod -aG sudo secureuser
+    ```
+    - This grants sudo privileges while avoiding use of root account.
+
+2.  **Disable Root SSH Login:**
+    - **Edited /etc/ssh/sshd_config:**
+    ```text
+    PermitRootLogin no
+    ```
+-   Restarted SSH service.
+
+3. Verify Access:
+-   Confirmed login is possible only via the new user and SSH key.
+
+**Screenshots:**
+- ![New User](screenshots/task7-server-hardening/new-user-created.png)
+- ![SSH Config Snippet](screenshots/task7-server-hardening/ssh-config-snippet.png)
+
+---
+
+
+##  Security Considerations
+
+- Root account was avoided for all operational tasks.
+
+- Security groups follow least privilege principle.
+
+- Proper file permissions set for website files.
+
+- Key-based SSH authentication is used.
+
+- Server hardening ensures minimal attack surface.
+
+
+##  Repository Contents
+    ```bash
+    /screenshots
+    /scripts
+    README.md
+    ```
+
+
+## Submission
+- Website is publicly accessible via Elastic IP
+- All tasks completed and documented as per project requirements
+- GitHub repository link: https://github.com/Etta-Diego/oneWayProjects
